@@ -1,0 +1,18 @@
+# Intellij
+.idea/
+*.iml
+*.iws
+
+thrift-client/*.iml
+thrift-server/*.iml
+kafka-consumer/*.iml
+
+# Maven
+log/
+target/
+
+thrift-client/target/
+thrift-server/target/
+kafka-consumer/target/
+
+LogSystem.log
