@@ -25,7 +25,7 @@ public class LogEventsGenerator {
         // Set level and message based on temperature
         Level logLevel = getLevel(temperature);
 
-        String message = "Reporting for room: " + room.toString() + ". Temperature is: " + temp + " celsius.";
+        String message = "Reporting from room: " + room.toString().toLowerCase() + ". Temperature is: " + temp + " celsius.";
 
         // Build the logging event
         LoggingEvent logEvent = new LoggingEvent();
@@ -56,15 +56,13 @@ public class LogEventsGenerator {
     private Level getLevel(Temperature t) {
         switch (t) {
             case TOO_COLD:
+            case TOO_WARM:
                 return Level.ERROR;
             case A_BIT_COLD:
+            case A_BIT_WARM:
                 return Level.WARN;
             case ROOM_TEMP:
                 return Level.INFO;
-            case A_BIT_WARM:
-                return Level.WARN;
-            case TOO_WARM:
-                return Level.ERROR;
             default:
                 return null;
         }

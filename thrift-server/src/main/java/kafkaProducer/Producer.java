@@ -15,7 +15,6 @@ public class Producer  {
 
     public void send(KafkaProducer producer, LoggingEvent event) {
         try {
-            LOG.info("Reached send");
             //We send a message, the send() method returns a Future object,
             //and we use get() to wait on the future and see if the send() was successful or not.
             producer.send(new ProducerRecord(serverSettings.get("topic"), event)).get();

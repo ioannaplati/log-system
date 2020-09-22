@@ -27,7 +27,6 @@ public class LogEventHandler implements ThriftService.Iface {
      */
     @Override
     public void logRoomTemperature(LoggingEvent e) throws TException {
-        LOG.info("Reached Handler");
         producer.send(kafkaProducer, e);
     }
 }

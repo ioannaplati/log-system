@@ -26,10 +26,8 @@ public class ThriftLogEventSender {
             TProtocol protocol = new TBinaryProtocol(transport);
             ThriftService.Client client = new ThriftService.Client(protocol);
 
-            LOG.debug("Calling service's log random event method...");
             client.logRoomTemperature(event);
 
-            LOG.debug("Log event has been sent...");
             transport.close();
         } catch (TException e) {
             LOG.error(e);

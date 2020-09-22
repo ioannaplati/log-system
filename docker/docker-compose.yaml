@@ -23,9 +23,21 @@ services:
       - 'kafka_data:/bitnami/kafka'
     depends_on:
       - zookeeper-server
+  cassandra-db:
+    container_name: cassandra
+    image: 'bitnami/cassandra:latest'
+    ports:
+      - '9042:9042'
+    environment:
+      - CASSANDRA_SEEDS=cassandra-db
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_USER=cassandra
+      - CASSANDRA_PASSWORD=cassandra
 
 volumes:
   zookeeper_data:
     driver: local
   kafka_data:
+    driver: local
+  cassandra_data:
     driver: local
