@@ -17,11 +17,14 @@ public class ThriftLogEventSender {
     private static Logger LOG = Logger.getLogger(ThriftLogEventSender.class);
     private HashMap<String, String> clientSettings = ClientSettings.getInstance().getClientSettings();
 
-    public void sendLogEvent(LoggingEvent event) {
-        TTransport transport;
-        transport = new TSocket(clientSettings.get("host"), Integer.parseInt(clientSettings.get("port")));
-        try {
+    private TTransport transport;
 
+    public ThriftLogEventSender() {
+        transport = new TSocket(clientSettings.get("host"), Integer.parseInt(clientSettings.get("port")));
+    }
+
+    public void sendLogEvent(LoggingEvent event) {
+        try {
             transport.open();
             TProtocol protocol = new TBinaryProtocol(transport);
             ThriftService.Client client = new ThriftService.Client(protocol);
@@ -32,7 +35,5 @@ public class ThriftLogEventSender {
         } catch (TException e) {
             LOG.error(e);
         }
-
-
     }
 }

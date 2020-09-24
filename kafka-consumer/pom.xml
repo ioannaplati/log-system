@@ -11,5 +11,9 @@
 
     <artifactId>kafka-consumer</artifactId>
 
+    <properties>
+        <skip.assembly>false</skip.assembly>
+        <main.class>KafkaConsumerApp</main.class>
+    </properties>
 
 </project>

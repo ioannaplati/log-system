@@ -1,6 +1,5 @@
 package cassandraConnector;
 
-
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import org.apache.log4j.Logger;

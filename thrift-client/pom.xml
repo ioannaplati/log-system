@@ -11,5 +11,10 @@
 
     <artifactId>thrift-client</artifactId>
 
+    <properties>
+        <skip.assembly>false</skip.assembly>
+        <main.class>thriftClientImpl.ThriftClientApp</main.class>
+    </properties>
+
 
 </project>

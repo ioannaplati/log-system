@@ -17,6 +17,12 @@
         <module>kafka-consumer</module>
     </modules>
 
+    <properties>
+        <slf4jVersion>1.6.1</slf4jVersion>
+        <skip.assembly>true</skip.assembly>
+        <main.class></main.class>
+    </properties>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -28,13 +34,36 @@
                         <target>8</target>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                        <skipAssembly>${skip.assembly}</skipAssembly>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>
+                                <mainClass>${main.class}</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>make-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
-    <properties>
-        <slf4jVersion>1.6.1</slf4jVersion>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -90,6 +119,8 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4jVersion}</version>
         </dependency>
+
+
     </dependencies>
 
 

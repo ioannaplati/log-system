@@ -39,7 +39,7 @@ public class ClientSettings {
      * Constructs a new ClientSettingsInstance.
      */
     private ClientSettings() {
-        HashMap<String,String> keyValues = new HashMap<String,String>();
+        HashMap<String,String> keyValues = new HashMap<>();
         Properties properties = new Properties();
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;

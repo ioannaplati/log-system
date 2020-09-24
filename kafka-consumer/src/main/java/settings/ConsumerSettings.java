@@ -39,7 +39,7 @@ public class ConsumerSettings {
      * Constructs a new ConsumerSettingsInstance.
      */
     private ConsumerSettings() {
-        HashMap<String,String> keyValues = new HashMap<String,String>();
+        HashMap<String,String> keyValues = new HashMap<>();
         Properties properties = new Properties();
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;

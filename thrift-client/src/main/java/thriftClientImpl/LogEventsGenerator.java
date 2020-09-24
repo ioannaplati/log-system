@@ -29,7 +29,7 @@ public class LogEventsGenerator {
 
         // Build the logging event
         LoggingEvent logEvent = new LoggingEvent();
-        logEvent.setV(Short.parseShort(clientSettings.get("eventVersion")));
+        logEvent.setV(version);
         logEvent.setTime(time);
         logEvent.setM(message);
         logEvent.setRoom(room);

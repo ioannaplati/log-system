@@ -24,39 +24,28 @@ import java.util.*;
  */
 public class Consumer {
 
-    private static Logger LOG = Logger.getLogger(Consumer.class);
-    private static HashMap<String,String> consumerSettings = ConsumerSettings.getInstance().getConsumerSettings();
+    private static final Logger LOG = Logger.getLogger(Consumer.class);
+    private static final HashMap<String, String> consumerSettings = ConsumerSettings.getInstance().getConsumerSettings();
 
-    private static ConsumerConstructor constructor;
     private static KafkaConsumer consumer;
-    private static Thread mainThread = new Thread();
     private static CassandraConnector connector;
-    private static Session session;
+    private static Thread mainThread;
 
-    public static void main(String[] args) {
-        constructor = new ConsumerConstructor();
+    public Consumer(ConsumerConstructor constructor) {
         consumer = constructor.constructConsumer();
         connector = new CassandraConnector();
+        mainThread = new Thread();
+        addShutDownHook();
+    }
 
-        mainThread = Thread.currentThread();
+    public void startBySubscribing(String topic) {
+        consume(() -> consumer.subscribe(Collections.singleton(topic)));
+    }
 
-        //Registering a shutdown hook so we can exit cleanly
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                LOG.info("Starting to exit kafka consumer loop...");
-                // The shutdownhook runs in a separate thread,
-                // so the only thing we can safely do to a consumer is wake it up
-                consumer.wakeup();
-                try {
-                    mainThread.join();
-                } catch (InterruptedException e) {
-                    LOG.error(e);
-                }
-            }
-        });
-
-        try { // Subscribe to topic
-            consumer.subscribe(Collections.singletonList("logs"));
+    private void consume(Runnable beforePollingTask) {
+        beforePollingTask.run();
+        LOG.info("Consumer subscribed to topic " + consumerSettings.get("topic") + " and will now receive messages.");
+        try {
             while (true) {
                 ConsumerRecords<String, LoggingEvent> records = consumer.poll(Long.parseLong(consumerSettings.get("timeoutMsForPoll")));
                 for (ConsumerRecord<String, LoggingEvent> record : records) {
@@ -69,27 +58,39 @@ public class Consumer {
                         String dateFormatted = formatter.format(date);
 
                         //Pass to cassandra db
-                        session = connector.getSession();
+                        Session session = connector.getSession();
+
+                        //Codec for operation timestamp (cassandra) <-> java.time.Instant
                         session.getCluster().getConfiguration().getCodecRegistry().register(InstantCodec.instance);
-                        PreparedStatement statement = session
-                                .prepare("INSERT INTO log_events (version, time, message, room, level, temperature_status) VALUES (?,?,?,?,?,?)");
-                        BoundStatement boundStatement = statement.bind((int)log.getV(), Instant.parse(dateFormatted),
-                                log.getM(), log.getRoom().toString(), log.getLevel().toString(), log.getTemperature().toString());
+                        PreparedStatement statement =
+                                session.prepare("INSERT INTO log_events (version, time, message, room, level, temperature_status) VALUES (?,?,?,?,?,?)");
+                        BoundStatement boundStatement =
+                                statement.bind((int) log.getV(), Instant.parse(dateFormatted), log.getM(), log.getRoom().toString(), log.getLevel().toString(), log.getTemperature().toString());
                         session.execute(boundStatement);
-                        LOG.info("Executed insert for " + log);
+                        LOG.info("Inserted new log in cassandra db.");
                     }
-
                 }
-
             }
         } catch (WakeupException e) {
             // Ignore the shutdown
-        } finally {
+        }finally {
             connector.close();
             consumer.close();
             LOG.info("Consumer is closed.");
         }
-
     }
 
+    //Registering a shutdown hook so we can exit the consumer cleanly
+    private void addShutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // The shutdownhook runs in a separate thread, so the only thing we can safely do to a consumer is wake it up
+            LOG.info("Starting to exit kafka consumer loop...");
+            consumer.wakeup();
+            try {
+                mainThread.join();
+            } catch (InterruptedException e) {
+                LOG.error(e);
+            }
+        }));
+    }
 }

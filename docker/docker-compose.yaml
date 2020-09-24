@@ -2,7 +2,7 @@ version: '2'
 
 services:
   zookeeper-server:
-    image: 'bitnami/zookeeper:latest'
+    image: 'bitnami/zookeeper:3'
     ports:
       - '2181:2181'
     environment:
@@ -10,7 +10,7 @@ services:
     volumes:
       - 'zookeeper_data:/bitnami/zookeeper'
   kafka-server:
-    image: 'bitnami/kafka:latest'
+    image: 'bitnami/kafka:2'
     ports:
       - '9092:9092'
     environment:
@@ -25,7 +25,7 @@ services:
       - zookeeper-server
   cassandra-db:
     container_name: cassandra
-    image: 'bitnami/cassandra:latest'
+    image: 'bitnami/cassandra:3'
     ports:
       - '9042:9042'
     environment:
