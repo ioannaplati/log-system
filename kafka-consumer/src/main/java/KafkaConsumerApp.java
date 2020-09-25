@@ -1,5 +1,5 @@
-import kafkaConsumerImpl.Consumer;
-import kafkaConsumerImpl.ConsumerConstructor;
+import kafkaConsumerImpl.AppConsumer;
+import kafkaConsumerImpl.AppConsumerConstructor;
 import org.apache.log4j.Logger;
 import settings.ConsumerSettings;
 
@@ -7,12 +7,12 @@ import java.util.HashMap;
 
 public class KafkaConsumerApp {
 
-    private static final Logger LOG = Logger.getLogger(Consumer.class);
+    private static final Logger LOG = Logger.getLogger(KafkaConsumerApp.class);
     private static final HashMap<String, String> consumerSettings = ConsumerSettings.getInstance().getConsumerSettings();
 
     public static void main(String[] args) {
-        ConsumerConstructor constructor = new ConsumerConstructor();
-        Consumer consumer = new Consumer(constructor);
-        consumer.startBySubscribing(consumerSettings.get("topic"));
+        AppConsumerConstructor constructor = new AppConsumerConstructor();
+        AppConsumer appConsumer = new AppConsumer(constructor);
+        appConsumer.startBySubscribing(consumerSettings.get("topic"));
     }
 }
