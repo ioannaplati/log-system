@@ -1,5 +1,6 @@
 package thriftClientImpl;
 
+import exceptions.ThriftClientException;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -33,7 +34,7 @@ public class ThriftLogEventSender {
 
             transport.close();
         } catch (TException e) {
-            LOG.error(e);
+            new ThriftClientException("Exception occurred while sending log event.", e);
         }
     }
 }

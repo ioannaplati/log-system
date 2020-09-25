@@ -1,5 +1,6 @@
 package settings;
 
+import exceptions.KafkaConsumerException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -29,7 +30,7 @@ public class ConsumerSettings {
             try {
                 instance = new ConsumerSettings();
             } catch (Exception e) {
-                LOG.error(e);
+                new KafkaConsumerException("Error while initiating Consumer Settings.", e);
             }
         }
         return instance;
@@ -57,20 +58,20 @@ public class ConsumerSettings {
                 setConsumerSettings(keyValues);
             }
         } catch (IOException e) {
-            LOG.error(e);
+            new KafkaConsumerException("Error while reading settings from properties.", e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    LOG.error(e);
+                    new KafkaConsumerException("Error when closing input stream.", e);
                 }
             }
             if (inputStreamReader!=null) {
                 try {
                     inputStreamReader.close();
                 } catch (IOException e) {
-                    LOG.error(e);
+                    new KafkaConsumerException("Error when closing input stream reader.", e);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package settings;
 
+import exceptions.ThriftServerException;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -29,7 +30,7 @@ public class ServerSettings {
             try {
                 instance = new ServerSettings();
             } catch (Exception e) {
-                LOG.error(e);
+                new ThriftServerException("Error while initiating Server Settings.", e);
             }
         }
         return instance;
@@ -57,20 +58,20 @@ public class ServerSettings {
                 setServerSettings(keyValues);
             }
         } catch (IOException e) {
-            LOG.error(e);
+            new ThriftServerException("Error while reading settings from properties.", e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    LOG.error(e);
+                    new ThriftServerException("Error when closing input stream.", e);
                 }
             }
             if (inputStreamReader!=null) {
                 try {
                     inputStreamReader.close();
                 } catch (IOException e) {
-                    LOG.error(e);
+                    new ThriftServerException("Error when closing input stream reader.", e);
                 }
             }
         }

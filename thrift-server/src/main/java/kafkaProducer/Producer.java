@@ -1,5 +1,6 @@
 package kafkaProducer;
 
+import exceptions.ThriftServerException;
 import org.apache.kafka.clients.producer.*;
 import org.apache.log4j.Logger;
 import settings.ServerSettings;
@@ -18,8 +19,9 @@ public class Producer  {
             //We send a message, the send() method returns a Future object,
             //and we use get() to wait on the future and see if the send() was successful or not.
             producer.send(new ProducerRecord(serverSettings.get("topic"), event)).get();
+            LOG.info("Message was sent from kafka producer.");
         }catch (InterruptedException | ExecutionException e) {
-            LOG.error(e);
+            new ThriftServerException("Error occurred while sending message from Kafka Producer.", e);
         }
     }
 }

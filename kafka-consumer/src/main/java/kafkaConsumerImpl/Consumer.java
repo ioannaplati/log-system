@@ -5,6 +5,7 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.extras.codecs.jdk8.InstantCodec;
+import exceptions.KafkaConsumerException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -89,7 +90,7 @@ public class Consumer {
             try {
                 mainThread.join();
             } catch (InterruptedException e) {
-                LOG.error(e);
+                new KafkaConsumerException("Thread interrupted.",e);
             }
         }));
     }

@@ -1,5 +1,6 @@
 package thriftServerImpl;
 
+import exceptions.ThriftServerException;
 import org.apache.log4j.Logger;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
@@ -35,7 +36,7 @@ public class ThriftServer {
             LOG.info("Thrift Server has started!");
             server.serve();
         } catch (TTransportException e) {
-           LOG.error(e);
+           new ThriftServerException("TTransport Exception occurred in Thrift Server.", e);
         }
 
     }
